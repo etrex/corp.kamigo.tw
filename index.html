@@ -272,5 +272,62 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Email 驗證函數
+        function isValidEmail(email) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return emailRegex.test(email);
+        }
+
+        document.getElementById('contactForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const emailInput = document.getElementById('email');
+            const email = emailInput.value.trim();
+
+            // Email 驗證
+            if (!email) {
+                alert('請填寫 Email');
+                emailInput.focus();
+                return;
+            }
+
+            if (!isValidEmail(email)) {
+                alert('請填寫有效的 Email 格式');
+                emailInput.focus();
+                return;
+            }
+
+            const submitButton = this.querySelector('button[type="submit"]');
+            submitButton.disabled = true;
+            submitButton.innerHTML = '傳送中...';
+
+            const formData = {
+                name: document.getElementById('name').value.trim(),
+                email: email,
+                message: document.getElementById('message').value.trim()
+            };
+
+            try {
+                const response = await fetch('https://script.google.com/macros/s/AKfycbzvLFVo0wRA2x_Zw2xtf9VE_YWKsP6Kt15y2ByN8yRF_4hMAubnDkod-T5xAJkdbRk/exec', {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                alert('訊息已送出！我們會盡快回覆您。');
+                this.reset();
+            } catch (error) {
+                alert('發生錯誤，請稍後再試。');
+                console.error('Error:', error);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '送出';
+            }
+        });
+    </script>
 </body>
 </html> 
